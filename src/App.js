@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
 
 // Components
@@ -25,11 +25,10 @@ import PAIA from './pages/PAIA/PAIA';
 
 function App() {
   return (
-    <Router>
-      <div className="app-container">
-        <Header />
-        <main className="content">
-          <Routes>
+    <div className="app-container">
+      <Header />
+      <main className="content">
+        <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/team" element={<Team />} />
             <Route path="/services" element={<Services />} />
@@ -48,10 +47,9 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/paia" element={<PAIA />} />
             {/* Removed placeholder routes for PAIA subpages since we now have direct document links */}
-          </Routes>
-        </main>
-      </div>
-    </Router>
+        </Routes>
+      </main>
+    </div>
   );
 }
 
