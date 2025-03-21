@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/harvey-nortje/static/css/main.be97e401.css",
+    "main.js": "/harvey-nortje/static/js/main.d2d1090f.js",
+    "static/js/453.25258b1b.chunk.js": "/harvey-nortje/static/js/453.25258b1b.chunk.js",
+    "static/media/slide1-accessible.jpg": "/harvey-nortje/static/media/slide1-accessible.a4b539dfbfd8763c63a9.jpg",
+    "static/media/logo2.png": "/harvey-nortje/static/media/logo2.d738997c45f76cf7fa8b.png",
+    "index.html": "/harvey-nortje/index.html",
+    "main.be97e401.css.map": "/harvey-nortje/static/css/main.be97e401.css.map",
+    "main.d2d1090f.js.map": "/harvey-nortje/static/js/main.d2d1090f.js.map",
+    "453.25258b1b.chunk.js.map": "/harvey-nortje/static/js/453.25258b1b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.be97e401.css",
+    "static/js/main.d2d1090f.js"
+  ]
+}
