@@ -1,0 +1,355 @@
+@import '../../styles/variables.css';
+
+.bee-page {
+  width: 100%;
+  background-color: var(--background-primary);
+  padding-bottom: 5rem;
+}
+
+.bee-header {
+  background: linear-gradient(135deg, var(--neutral-black) 0%, #333333 100%);
+  color: white;
+  padding: 5rem 0 3rem;
+  text-align: center;
+  position: relative;
+}
+
+.bee-header:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, var(--primary-orange), var(--primary-orange-dark));
+}
+
+.bee-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--primary-orange);
+}
+
+.bee-intro {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.4rem;
+  line-height: 1.8;
+}
+
+.bee-content {
+  padding: 5rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.bee-section {
+  background-color: white;
+  border-radius: 10px;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.bee-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+.bee-info p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: var(--neutral-gray-dark);
+  margin-bottom: 2rem;
+}
+
+.bee-info strong {
+  color: var(--neutral-black);
+  font-weight: 700;
+}
+
+.bee-badge {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.level-badge {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--primary-orange-dark) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  box-shadow: 0 10px 25px rgba(255, 127, 0, 0.3);
+  position: relative;
+}
+
+.level-badge:before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  animation: rotate 30s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.level-number {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.level-text {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.certificate-link {
+  margin-top: 2rem;
+}
+
+.certificate-button {
+  display: inline-flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  color: var(--neutral-black);
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 4px solid var(--primary-orange);
+}
+
+.certificate-button .icon {
+  margin-right: 0.8rem;
+  font-size: 1.3rem;
+}
+
+.certificate-button:hover {
+  background-color: #eeeeee;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.bee-commitment {
+  background-color: white;
+  border-radius: 10px;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.bee-commitment h2 {
+  font-size: 2rem;
+  color: var(--neutral-black);
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.bee-commitment h2:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-orange);
+  border-radius: 2px;
+}
+
+.bee-commitment p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--neutral-gray-dark);
+  margin-bottom: 1.5rem;
+}
+
+.bee-commitment ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bee-commitment ul li {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--neutral-gray-dark);
+}
+
+.bee-commitment ul li:before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--primary-orange);
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .bee-header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .bee-intro {
+    font-size: 1.3rem;
+  }
+  
+  .bee-section {
+    padding: 2.5rem;
+  }
+  
+  .bee-info p {
+    font-size: 1.1rem;
+  }
+  
+  .level-badge {
+    width: 130px;
+    height: 130px;
+  }
+  
+  .level-number {
+    font-size: 3.5rem;
+  }
+  
+  .bee-commitment h2 {
+    font-size: 1.8rem;
+  }
+  
+  .bee-commitment p, 
+  .bee-commitment ul li {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .bee-header {
+    padding: 4rem 0 2.5rem;
+  }
+  
+  .bee-content {
+    padding: 4rem 0;
+  }
+  
+  .bee-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 2.5rem;
+  }
+  
+  .bee-info {
+    margin-bottom: 2rem;
+  }
+  
+  .bee-badge {
+    padding: 0;
+  }
+  
+  .certificate-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .bee-commitment {
+    padding: 2.5rem;
+  }
+  
+  .bee-commitment h2:after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .bee-commitment h2,
+  .bee-commitment p {
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .bee-header h1 {
+    font-size: 2rem;
+  }
+  
+  .bee-intro {
+    font-size: 1.1rem;
+  }
+  
+  .bee-content {
+    padding: 3rem 0;
+  }
+  
+  .bee-section, 
+  .bee-commitment {
+    padding: 2rem;
+  }
+  
+  .bee-info p {
+    font-size: 1rem;
+  }
+  
+  .level-badge {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .level-number {
+    font-size: 3rem;
+  }
+  
+  .certificate-button {
+    font-size: 1rem;
+    padding: 0.9rem 1.5rem;
+  }
+  
+  .certificate-button .text {
+    font-size: 0.95rem;
+  }
+  
+  .bee-commitment h2 {
+    font-size: 1.6rem;
+  }
+  
+  .bee-commitment p, 
+  .bee-commitment ul li {
+    font-size: 1rem;
+  }
+  
+  .bee-commitment ul li {
+    padding-left: 1.5rem;
+    text-align: left;
+  }
+}
