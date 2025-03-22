@@ -10,29 +10,39 @@ const Careers = () => {
   const benefitsRef = useRef(null);
   
   useEffect(() => {
+    // Create a timeline for better control
+    const tl = gsap.timeline();
+    
+    // Make sure all elements are visible before animating
+    gsap.set([pageRef.current, headerRef.current, contentRef.current, benefitsRef.current, ".qualities-list li", ".benefit-card"], {
+      visibility: "visible"
+    });
+    
     // Simple fade-in animation for the entire page
-    gsap.fromTo(
+    tl.fromTo(
       pageRef.current,
       { opacity: 0 },
       { opacity: 1, duration: 0.8, ease: "power2.out" }
     );
     
     // Simple animation for header
-    gsap.fromTo(
+    tl.fromTo(
       headerRef.current,
       { y: -20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.2 }
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+      "-=0.6" // Overlap with previous animation
     );
     
     // Simple animation for main content
-    gsap.fromTo(
+    tl.fromTo(
       contentRef.current,
       { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.4 }
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+      "-=0.6" // Overlap with previous animation
     );
     
     // Simple animation for qualities list items
-    gsap.fromTo(
+    tl.fromTo(
       ".qualities-list li",
       { x: -20, opacity: 0 },
       { 
@@ -40,20 +50,21 @@ const Careers = () => {
         opacity: 1, 
         duration: 0.5, 
         stagger: 0.1, 
-        ease: "power2.out",
-        delay: 0.6
-      }
+        ease: "power2.out"
+      },
+      "-=0.4" // Overlap with previous animation
     );
     
     // Simple animation for benefits section
-    gsap.fromTo(
+    tl.fromTo(
       benefitsRef.current,
       { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.8 }
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+      "-=0.2" // Overlap with previous animation
     );
     
     // Simple animation for benefit cards
-    gsap.fromTo(
+    tl.fromTo(
       ".benefit-card",
       { y: 20, opacity: 0, scale: 0.95 },
       { 
@@ -62,13 +73,18 @@ const Careers = () => {
         scale: 1,
         duration: 0.6, 
         stagger: 0.15, 
-        ease: "back.out(1.2)",
-        delay: 1
-      }
+        ease: "back.out(1.2)"
+      },
+      "-=0.6" // Overlap with previous animation
     );
     
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
+    
+    // Cleanup function
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   return (

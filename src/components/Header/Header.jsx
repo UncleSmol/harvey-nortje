@@ -1,391 +1,261 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { gsap } from 'gsap';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import './Header.css';
-import logoSmall from '../../assets/logo.png';
-import logoLarge from '../../assets/logo2.png';
 import { showDropdown, hideDropdown, handleHoverAnimation } from './dropdownAnimation';
+import logo1 from '../../assets/logo1.png'; // Import the small logo
+import logo2 from '../../assets/logo2.png'; // Import the large logo
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeMenuItem, setActiveMenuItem] = useState(null);
-  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 992);
-  // Removed unused variable: submenuVisible
+  // State to track mobile menu visibility
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  // Get current location to detect route changes
-  const location = useLocation();
+  // State to track which dropdown is active
+  const [activeDropdown, setActiveDropdown] = useState(null);
   
-  // Refs for GSAP animations
-  const headerRef = useRef(null);
-  const menuItemsRef = useRef([]);
-  const logoRef = useRef(null);
-  const hamburgerRef = useRef(null);
-  const submenuRef = useRef(null);
+  // State to track which logo to display
+  const [useMobileLogo, setUseMobileLogo] = useState(window.innerWidth < 992);
+  
+  // References to DOM elements
   const navMenuRef = useRef(null);
-
-  // Define animateHamburger first since it's used by closeMenu
-  const animateHamburger = useCallback((open) => {
-    if (!hamburgerRef.current) return;
-    
-    const lines = hamburgerRef.current.querySelectorAll('.hamburger-line');
-    
-    if (open) {
-      // Animate to X
-      gsap.to(lines[0], { 
-        rotation: 45, 
-        y: 8, 
-        duration: 0.4,
-        ease: "power2.inOut" 
-      });
-      
-      gsap.to(lines[1], { 
-        opacity: 0, 
-        duration: 0.2,
-        ease: "power2.inOut" 
-      });
-      
-      gsap.to(lines[2], { 
-        rotation: -45, 
-        y: -8, 
-        duration: 0.4,
-        ease: "power2.inOut" 
-      });
-    } else {
-      // Animate back to hamburger
-      gsap.to(lines[0], { 
-        rotation: 0, 
-        y: 0, 
-        duration: 0.4,
-        ease: "power2.inOut" 
-      });
-      
-      gsap.to(lines[1], { 
-        opacity: 1, 
-        duration: 0.2,
-        ease: "power2.inOut" 
-      });
-      
-      gsap.to(lines[2], { 
-        rotation: 0, 
-        y: 0, 
-        duration: 0.4,
-        ease: "power2.inOut" 
-      });
-    }
-  }, []);
-
-  // Define closeMenu after animateHamburger to avoid dependency issues
-  const closeMenu = useCallback(() => {
-    setIsOpen(false);
-    
-    // Reset any open submenus
-    setActiveMenuItem(null);
-    
-    // Animate hamburger back
-    animateHamburger(false);
-    
-    // Animate menu closing
-    if (navMenuRef.current) {
-      gsap.to(navMenuRef.current, {
-        right: window.innerWidth <= 576 ? "-280px" : "-300px",
-        duration: 0.4,
-        ease: "power3.inOut",
-        onComplete: () => {
-          // Re-enable scrolling
-          document.body.style.overflow = '';
-        }
-      });
-    }
-  }, [animateHamburger]);
-
-  const openMenu = useCallback(() => {
-    setIsOpen(true);
-    
-    // Animate hamburger to X
-    animateHamburger(true);
-    
-    // Animate menu opening
-    if (navMenuRef.current) {
-      gsap.to(navMenuRef.current, {
-        right: 0,
-        duration: 0.4,
-        ease: "power3.inOut"
-      });
-      
-      // Animate menu items appearing
-      const mobileMenuItems = navMenuRef.current.querySelectorAll('.menu-item');
-      gsap.fromTo(
-        mobileMenuItems,
-        { 
-          x: 50,
-          opacity: 0 
-        },
-        { 
-          x: 0,
-          opacity: 1,
-          stagger: 0.05,
-          duration: 0.3,
-          ease: "power2.out",
-          delay: 0.2
-        }
-      );
-    }
-    
-    // Disable body scrolling
-    document.body.style.overflow = 'hidden';
-  }, [animateHamburger]);
+  const hamburgerRef = useRef(null);
   
-  const toggleMenu = useCallback(() => {
-    console.log("Toggle menu clicked, current state:", isOpen);
-    if (!isOpen) {
-      openMenu();
-    } else {
-      closeMenu();
+  // Pre-create refs for all menu items and submenus
+  const menuItemRefs = useRef({});
+  const submenuRefs = useRef({});
+  
+  // Menu structure (wrapped in useMemo to avoid re-creation on each render)
+  // Updated to match the exact pages in src/pages folder
+  const menuItems = useMemo(() => [
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+    { name: 'Team', path: '/team' },
+    { name: 'History', path: '/history' },
+    { name: 'News', path: '/news' },
+    { name: 'Careers', path: '/careers' },
+    { name: 'BEE', path: '/bee' },
+    { name: 'PAIA', path: '/paia' },
+    { name: 'Contact', path: '/contact' }
+  ], []);
+  
+  // Track whether we're on mobile viewport
+  const isMobileView = () => window.innerWidth < 992;
+  
+  // Toggle mobile menu
+  const toggleMobileMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setMobileMenuOpen(!mobileMenuOpen);
+    
+    // Toggle active class on hamburger button for animation
+    if (hamburgerRef.current) {
+      hamburgerRef.current.classList.toggle('active');
     }
-  }, [isOpen, openMenu, closeMenu]);
-
-  // Handle screen resize for responsive logo
+    
+    // Toggle active class on nav menu for sliding animation
+    if (navMenuRef.current) {
+      navMenuRef.current.classList.toggle('active');
+    }
+  };
+  
+  // Handle dropdown toggling
+  const toggleDropdown = (index, e) => {
+    // Prevent default link behavior
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // On mobile, toggle the dropdown state
+    if (isMobileView()) {
+      // If clicking the already active dropdown, close it
+      if (activeDropdown === index) {
+        setActiveDropdown(null);
+      } else {
+        // Otherwise, open this dropdown and close others
+        setActiveDropdown(index);
+      }
+    }
+  };
+  
+  // Initialize refs for menu items and submenus
+  useEffect(() => {
+    // Create refs for each menu item
+    menuItems.forEach((_, index) => {
+      menuItemRefs.current[index] = React.createRef();
+      
+      // Create refs for submenus if they exist
+      if (menuItems[index].submenu && menuItems[index].submenu.length > 0) {
+        submenuRefs.current[index] = React.createRef();
+      }
+    });
+  }, [menuItems]);
+  
+  // Handle mouse enter for desktop dropdown
+  const handleMouseEnter = (index) => {
+    if (!isMobileView() && submenuRefs.current[index]) {
+      setActiveDropdown(index);
+      showDropdown(submenuRefs.current[index].current);
+    }
+  };
+  
+  // Handle mouse leave for desktop dropdown
+  const handleMouseLeave = (index) => {
+    if (!isMobileView() && submenuRefs.current[index]) {
+      setActiveDropdown(null);
+      hideDropdown(submenuRefs.current[index].current);
+    }
+  };
+  
+  // Handle item hover animation
+  const handleItemHover = (index, isEntering) => {
+    const element = menuItemRefs.current[index]?.current;
+    if (element) {
+      handleHoverAnimation(element, isEntering);
+    }
+  };
+  
+  // Update logo and handle mobile menu on resize
   useEffect(() => {
     const handleResize = () => {
-      const largeScreen = window.innerWidth >= 992;
-      setIsLargeScreen(largeScreen);
+      const isMobile = window.innerWidth < 992;
       
-      // Close mobile menu if screen is resized to desktop
-      if (largeScreen && isOpen) {
-        closeMenu();
+      // Update logo based on screen size
+      setUseMobileLogo(isMobile);
+      
+      // Close mobile menu when resizing to desktop
+      if (!isMobile && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+        if (hamburgerRef.current) hamburgerRef.current.classList.remove('active');
+        if (navMenuRef.current) navMenuRef.current.classList.remove('active');
       }
     };
-
+    
+    // Set initial logo state
+    handleResize();
+    
+    // Add event listener
     window.addEventListener('resize', handleResize);
+    
+    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [isOpen, closeMenu]);
+  }, [mobileMenuOpen]);
   
-  // Close menu when route changes
-  useEffect(() => {
-    if (isOpen) {
-      closeMenu();
-    }
-  }, [location, isOpen, closeMenu]);
-  
-  // Close menu when clicking outside
+  // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isOpen && 
-          navMenuRef.current && !navMenuRef.current.contains(event.target) && 
-          hamburgerRef.current && !hamburgerRef.current.contains(event.target)) {
-        closeMenu();
+      if (mobileMenuOpen && 
+          navMenuRef.current && 
+          !navMenuRef.current.contains(event.target) && 
+          hamburgerRef.current && 
+          !hamburgerRef.current.contains(event.target)) {
+        setMobileMenuOpen(false);
+        hamburgerRef.current.classList.remove('active');
+        navMenuRef.current.classList.remove('active');
       }
     };
-
+    
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside, { passive: true });
+    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [isOpen, closeMenu]);
+  }, [mobileMenuOpen]);
   
-  // Initial animations when component mounts
-  useEffect(() => {
-    // Logo animation
-    if (logoRef.current) {
-      gsap.fromTo(
-        logoRef.current,
-        { 
-          opacity: 0,
-          x: -30
-        },
-        { 
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: "power3.out"
-        }
-      );
-    }
-    
-    // Hamburger animation
-    if (hamburgerRef.current) {
-      gsap.fromTo(
-        hamburgerRef.current,
-        {
-          opacity: 0,
-          x: 30
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: "power3.out"
-        }
-      );
-    }
-    
-    // Menu items animation - staggered entry
-    if (menuItemsRef.current.length > 0) {
-      gsap.fromTo(
-        menuItemsRef.current,
-        { 
-          y: -20,
-          opacity: 0 
-        },
-        { 
-          y: 0,
-          opacity: 1,
-          stagger: 0.1,
-          duration: 0.6,
-          ease: "power2.out",
-          delay: 0.3
-        }
-      );
-    }
-  }, []);
-
-  // Handle dropdown menu animations
-  const handleMouseEnter = useCallback((menuIndex) => {
-    setActiveMenuItem(menuIndex);
-    // Using submenu visibility directly through DOM manipulation instead of state
-    
-    if (submenuRef.current) {
-      showDropdown(submenuRef.current);
-    }
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (submenuRef.current) {
-      hideDropdown(submenuRef.current, () => {
-        setActiveMenuItem(null);
-        // No need to set submenuVisible state
-      });
-    }
-  }, []);
-
-  // Toggle submenu in mobile view
-  const toggleSubmenu = useCallback((menuIndex, e) => {
-    if (window.innerWidth < 992) {
-      e.preventDefault();
-      
-      if (activeMenuItem === menuIndex) {
-        setActiveMenuItem(null);
-      } else {
-        setActiveMenuItem(menuIndex);
-      }
-    }
-  }, [activeMenuItem]);
-
-  // GSAP hover effect for menu items
-  const handleMenuItemHover = useCallback((e, enter) => {
-    handleHoverAnimation(e.currentTarget, enter);
-  }, []);
-
-  const menuItems = [
-    { name: 'Home', path: '/' },
-    { name: 'The Team', path: '/team' },
-    { name: 'Services', path: '/services' },
-    { name: 'BEE', path: '/bee' },
-    { name: 'Careers', path: '/careers' },
-    { name: 'Contact Us', path: '/contact' },
-    { name: 'News & Articles', path: '/news' },
-    { name: 'Since 1908', path: '/history' },
-    { 
-      name: 'PAIA Information Manual & Guides', 
-      path: '/paia',
-      submenu: [
-        { name: 'PAIA Manual', path: '/paia/manual' },
-        { name: 'PAIA Guide - English', path: '/paia/guide-english' },
-        { name: 'PAIA Guide- Afrikaans', path: '/paia/guide-afrikaans' },
-        { name: 'PAIA Guide - iSizulu', path: '/paia/guide-isizulu' }
-      ]
-    }
-    // POPI link removed as requested
-  ];
-
+  // Function to close mobile menu (reused in multiple places)
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    if (hamburgerRef.current) hamburgerRef.current.classList.remove('active');
+    if (navMenuRef.current) navMenuRef.current.classList.remove('active');
+  };
+  
   return (
-    <header className="header" ref={headerRef}>
+    <header className="header">
       <div className="header-container">
         <div className="logo-container">
           <Link to="/">
             <img 
-              src={isLargeScreen ? logoLarge : logoSmall} 
-              alt="Harvey Nortje Logo" 
+              src={useMobileLogo ? logo1 : logo2} 
+              alt="Harvey Nortje Attorneys" 
               className="logo" 
-              ref={logoRef}
             />
           </Link>
         </div>
         
         <div className="nav-container">
-          <nav className={`nav-menu ${isOpen ? 'open' : ''}`} ref={navMenuRef}>
+          <nav className={`nav-menu ${mobileMenuOpen ? 'active' : ''}`} ref={navMenuRef}>
             <ul className="menu-items">
-              {menuItems.map((item, index) => (
-                <li 
-                  key={index} 
-                  className={`menu-item ${item.submenu ? 'has-submenu' : ''} ${activeMenuItem === index ? 'submenu-active' : ''} ${location.pathname === item.path ? 'active' : ''}`}
-                  onMouseEnter={(e) => {
-                    if (window.innerWidth >= 992) {
-                      item.submenu && handleMouseEnter(index);
-                      handleMenuItemHover(e, true);
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (window.innerWidth >= 992) {
-                      item.submenu && handleMouseLeave();
-                      handleMenuItemHover(e, false);
-                    }
-                  }}
-                  ref={el => menuItemsRef.current[index] = el}
-                >
-                  {item.submenu ? (
-                    // For items with submenu
-                    <>
+              {menuItems.map((item, index) => {
+                // Determine if this is a dropdown item
+                const hasSubmenu = item.submenu && item.submenu.length > 0;
+                
+                // Determine if this dropdown is active
+                const isActive = activeDropdown === index;
+                
+                return (
+                  <li 
+                    key={index}
+                    className={`menu-item ${hasSubmenu ? 'has-submenu' : ''} ${isActive ? 'submenu-active' : ''}`}
+                    style={{ '--item-index': index }} // For staggered animation
+                    onMouseEnter={hasSubmenu ? () => handleMouseEnter(index) : undefined}
+                    onMouseLeave={hasSubmenu ? () => handleMouseLeave(index) : undefined}
+                    ref={menuItemRefs.current[index]}
+                  >
+                    {hasSubmenu ? (
+                      <>
+                        <button 
+                          className="dropdown-button"
+                          onClick={(e) => toggleDropdown(index, e)}
+                          onMouseEnter={() => handleItemHover(index, true)}
+                          onMouseLeave={() => handleItemHover(index, false)}
+                        >
+                          {item.name}
+                          <span className="dropdown-arrow"></span>
+                        </button>
+                        <ul 
+                          className={`submenu ${isMobileView() && isActive ? 'active' : ''}`}
+                          ref={submenuRefs.current[index]}
+                        >
+                          {item.submenu.map((subItem, subIndex) => (
+                            <li key={subIndex} className="submenu-item">
+                              <Link 
+                                to={subItem.path}
+                                onClick={closeMobileMenu}
+                              >
+                                {subItem.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    ) : (
                       <Link 
                         to={item.path}
-                        onClick={(e) => item.submenu && toggleSubmenu(index, e)}
-                        className={location.pathname === item.path ? 'active' : ''}
+                        onMouseEnter={() => handleItemHover(index, true)}
+                        onMouseLeave={() => handleItemHover(index, false)}
+                        onClick={closeMobileMenu}
                       >
                         {item.name}
-                        <span className="dropdown-arrow"></span>
                       </Link>
-                      
-                      <ul 
-                        className={`submenu ${activeMenuItem === index ? 'active' : ''}`}
-                        ref={activeMenuItem === index ? submenuRef : null}
-                      >
-                        {item.submenu.map((subItem, subIndex) => (
-                          <li key={subIndex} className="submenu-item">
-                            <Link 
-                              to={subItem.path}
-                              onClick={() => window.innerWidth < 992 && closeMenu()}
-                              className={location.pathname === subItem.path ? 'active' : ''}
-                            >
-                              {subItem.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  ) : (
-                    // For regular menu items
-                    <Link 
-                      to={item.path}
-                      onClick={() => window.innerWidth < 992 && closeMenu()}
-                      className={location.pathname === item.path ? 'active' : ''}
-                    >
-                      {item.name}
-                    </Link>
-                  )}
-                </li>
-              ))}
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </nav>
         </div>
         
         <button 
-          className={`mobile-menu-toggle ${isOpen ? 'active' : ''}`} 
-          onClick={toggleMenu} 
+          className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`}
+          onClick={toggleMobileMenu}
           ref={hamburgerRef}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
-          type="button"
+          aria-label="Toggle mobile menu"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-nav-menu"
         >
           <div className="hamburger">
             <span className="hamburger-line"></span>

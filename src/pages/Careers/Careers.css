@@ -13,7 +13,7 @@
   padding: 5rem 0 3rem;
   text-align: center;
   position: relative;
-  opacity: 0; /* For GSAP animation */
+  opacity: 1; /* Changed from 0 to ensure visibility */
 }
 
 .careers-header:after {
@@ -38,8 +38,8 @@
   margin: 0 auto;
   font-size: 1.4rem;
   line-height: 1.8;
-  opacity: 0; /* For GSAP animation */
-  transform: translateY(20px); /* For GSAP animation */
+  opacity: 1; /* Changed from 0 to ensure visibility */
+  transform: none; /* Removed transform to ensure proper positioning */
 }
 
 .careers-content {
@@ -58,8 +58,8 @@
   padding: 3rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   margin-bottom: 3rem;
-  opacity: 0; /* For GSAP animation */
-  transform: translateY(30px); /* For GSAP animation */
+  opacity: 1; /* Changed from 0 to ensure visibility */
+  transform: none; /* Removed transform to ensure proper positioning */
 }
 
 .careers-section h2 {
@@ -115,8 +115,8 @@
   line-height: 1.6;
   color: var(--neutral-gray-dark);
   margin-bottom: 1rem;
-  opacity: 0; /* For GSAP animation */
-  transform: translateX(-10px); /* For GSAP animation */
+  opacity: 1; /* Changed from 0 to ensure visibility */
+  transform: none; /* Removed transform to ensure proper positioning */
 }
 
 .qualities-list li:before {
@@ -133,8 +133,8 @@
   padding: 2rem;
   text-align: center;
   border-left: 4px solid var(--primary-orange);
-  opacity: 0; /* For GSAP animation */
-  transform: translateY(20px); /* For GSAP animation */
+  opacity: 1; /* Changed from 0 to ensure visibility */
+  transform: none; /* Removed transform to ensure proper positioning */
 }
 
 .careers-cta h3 {
@@ -208,8 +208,8 @@
   border-radius: 10px;
   padding: 3rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  opacity: 0; /* For GSAP animation */
-  transform: translateY(30px); /* For GSAP animation */
+  opacity: 1; /* Changed from 0 to ensure visibility */
+  transform: none; /* Removed transform to ensure proper positioning */
 }
 
 .careers-benefits h2 {
@@ -246,8 +246,8 @@
   transition: all 0.3s ease;
   background-color: var(--background-secondary);
   border-top: 4px solid var(--primary-orange);
-  opacity: 0; /* For GSAP animation */
-  transform: translateY(20px); /* For GSAP animation */
+  opacity: 1; /* Changed from 0 to ensure visibility */
+  transform: none; /* Removed transform to ensure proper positioning */
 }
 
 .benefit-card:hover {
