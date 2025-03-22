@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
+import { gsap } from 'gsap';
 import './ArticleDetail.css';
 
 const ArticleDetail = () => {
   const { articleId } = useParams();
+  
+  // Create refs for animated elements
+  const pageRef = useRef(null);
+  const headerRef = useRef(null);
+  const contentRef = useRef(null);
   
   // Article data - in a real application, this would come from an API or CMS
   const articles = {
@@ -164,22 +170,80 @@ const ArticleDetail = () => {
     }
   };
   
+  // Define article variable outside of conditional
+  const article = articles[articleId];
+  
+  useEffect(() => {
+    // If article doesn't exist, we'll handle the redirect in the render
+    if (!article) return;
+    
+    // Simple fade-in animation for the entire page
+    gsap.fromTo(
+      pageRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8, ease: "power2.out" }
+    );
+    
+    // Simple animation for header
+    gsap.fromTo(
+      headerRef.current,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.2 }
+    );
+    
+    // Simple animation for content
+    gsap.fromTo(
+      contentRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.4 }
+    );
+    
+    // Simple animation for article sections
+    gsap.fromTo(
+      ".article-section",
+      { y: 20, opacity: 0 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        duration: 0.5, 
+        stagger: 0.1, 
+        ease: "power2.out",
+        delay: 0.6
+      }
+    );
+    
+    // Simple animation for related services and actions
+    gsap.fromTo(
+      [".related-services", ".article-actions"],
+      { y: 20, opacity: 0 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        duration: 0.5, 
+        stagger: 0.1, 
+        ease: "power2.out",
+        delay: 0.8
+      }
+    );
+    
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+  }, [articleId, article]); // Include article in dependencies
+  
   // If article doesn't exist, redirect to news page
-  if (!articles[articleId]) {
+  if (!article) {
     return <Navigate to="/news" />;
   }
   
-  const article = articles[articleId];
-  
   return (
-    <div className="article-detail-page">
-      <div className="article-header">
+    <div className="article-detail-page" ref={pageRef}>
+      <div className="article-header" ref={headerRef}>
         <div className="container">
           <h1>{article.title}</h1>
         </div>
       </div>
 
-      <div className="article-content">
+      <div className="article-content" ref={contentRef}>
         <div className="container">
           <div className="article-body">
             {article.content.map((section, index) => (

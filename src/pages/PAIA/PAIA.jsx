@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import './PAIA.css';
 
 const PAIA = () => {
+  // Create refs for animated elements
+  const pageRef = useRef(null);
+  const headerRef = useRef(null);
+  const contentRef = useRef(null);
+  const infoRef = useRef(null);
+  const contactRef = useRef(null);
+  
   const paiaDocuments = [
     {
       id: 'manual',
@@ -32,10 +40,65 @@ const PAIA = () => {
       icon: '🇿🇦'
     }
   ];
+  
+  useEffect(() => {
+    // Simple fade-in animation for the entire page
+    gsap.fromTo(
+      pageRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8, ease: "power2.out" }
+    );
+    
+    // Simple animation for header
+    gsap.fromTo(
+      headerRef.current,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.2 }
+    );
+    
+    // Simple animation for content
+    gsap.fromTo(
+      contentRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.4 }
+    );
+    
+    // Animation for info section
+    gsap.fromTo(
+      infoRef.current,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: 0.6 }
+    );
+    
+    // Staggered animation for document cards
+    gsap.fromTo(
+      ".document-card",
+      { y: 20, opacity: 0, scale: 0.95 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        scale: 1,
+        duration: 0.6, 
+        stagger: 0.15, 
+        ease: "back.out(1.2)",
+        delay: 0.8
+      }
+    );
+    
+    // Animation for contact section
+    gsap.fromTo(
+      contactRef.current,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: 1 }
+    );
+    
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
-    <div className="paia-page">
-      <div className="paia-header">
+    <div className="paia-page" ref={pageRef}>
+      <div className="paia-header" ref={headerRef}>
         <div className="container">
           <h1>PAIA Information Manual & Guides</h1>
           <p className="paia-intro">
@@ -44,10 +107,10 @@ const PAIA = () => {
         </div>
       </div>
 
-      <div className="paia-content">
+      <div className="paia-content" ref={contentRef}>
         <div className="container">
           <div className="paia-section">
-          <div className="paia-info">
+          <div className="paia-info" ref={infoRef}>
             <h2>About PAIA</h2>
             <p>
               The Promotion of Access to Information Act (PAIA) gives effect to the constitutional right of access 
@@ -85,7 +148,7 @@ const PAIA = () => {
           </div>
           </div>
           
-          <div className="paia-contact">
+          <div className="paia-contact" ref={contactRef}>
           <h2>Information Officer Contact Details</h2>
           <p>
             For any PAIA-related inquiries or to submit a PAIA request, please contact our Information Officer:

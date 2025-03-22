@@ -1,10 +1,64 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import './Contact.css';
 
 const Contact = () => {
+  // Create refs for animated elements
+  const pageRef = useRef(null);
+  const headerRef = useRef(null);
+  const contentRef = useRef(null);
+  const mapRef = useRef(null);
+  
+  useEffect(() => {
+    // Simple fade-in animation for the entire page
+    gsap.fromTo(
+      pageRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8, ease: "power2.out" }
+    );
+    
+    // Simple animation for header
+    gsap.fromTo(
+      headerRef.current,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.2 }
+    );
+    
+    // Simple animation for content
+    gsap.fromTo(
+      contentRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.4 }
+    );
+    
+    // Simple animation for contact cards
+    gsap.fromTo(
+      ".contact-card",
+      { y: 20, opacity: 0 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        duration: 0.7, 
+        stagger: 0.2, 
+        ease: "power2.out",
+        delay: 0.6
+      }
+    );
+    
+    // Simple animation for map section
+    gsap.fromTo(
+      mapRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.8 }
+    );
+    
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="contact-page">
-      <div className="contact-header">
+    <div className="contact-page" ref={pageRef}>
+      <div className="contact-header" ref={headerRef}>
         <div className="container">
           <h1>Contact Us</h1>
           <p className="contact-intro">
@@ -13,7 +67,7 @@ const Contact = () => {
         </div>
       </div>
 
-      <div className="contact-content">
+      <div className="contact-content" ref={contentRef}>
         <div className="container">
           <div className="contact-grid">
             <div className="contact-info">
@@ -106,7 +160,7 @@ const Contact = () => {
         </div>
       </div>
       
-      <div className="map-section">
+      <div className="map-section" ref={mapRef}>
         <iframe 
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.1234567890123!2d29.2345678!3d-25.8765432!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDUyJzM1LjYiUyAyOcKwMTQnMDQuNCJF!5e0!3m2!1sen!2sza!4v1234567890123!5m2!1sen!2sza" 
           width="100%" 

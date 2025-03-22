@@ -1,10 +1,80 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import './History.css';
 
 const History = () => {
+  // Create refs for animated elements
+  const pageRef = useRef(null);
+  const headerRef = useRef(null);
+  const contentRef = useRef(null);
+  const timelineRef = useRef(null);
+  const valuesRef = useRef(null);
+  
+  useEffect(() => {
+    // Simple fade-in animation for the entire page
+    gsap.fromTo(
+      pageRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8, ease: "power2.out" }
+    );
+    
+    // Simple animation for header
+    gsap.fromTo(
+      headerRef.current,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.2 }
+    );
+    
+    // Simple animation for content
+    gsap.fromTo(
+      contentRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.4 }
+    );
+    
+    // Staggered animation for timeline items
+    gsap.fromTo(
+      ".timeline-item",
+      { x: -30, opacity: 0 },
+      { 
+        x: 0, 
+        opacity: 1, 
+        duration: 0.7, 
+        stagger: 0.2, 
+        ease: "power2.out",
+        delay: 0.6
+      }
+    );
+    
+    // Animation for values section
+    gsap.fromTo(
+      valuesRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.8 }
+    );
+    
+    // Staggered animation for value cards
+    gsap.fromTo(
+      ".value-card",
+      { y: 20, opacity: 0, scale: 0.95 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        scale: 1,
+        duration: 0.6, 
+        stagger: 0.15, 
+        ease: "back.out(1.2)",
+        delay: 1
+      }
+    );
+    
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="history-page">
-      <div className="history-header">
+    <div className="history-page" ref={pageRef}>
+      <div className="history-header" ref={headerRef}>
         <div className="container">
           <h1>Since 1908</h1>
           <p className="history-intro">
@@ -13,7 +83,7 @@ const History = () => {
         </div>
       </div>
 
-      <div className="history-content">
+      <div className="history-content" ref={contentRef}>
         <div className="container">
           <div className="history-section">
             <div className="history-text">
@@ -39,7 +109,7 @@ const History = () => {
               </p>
             </div>
             
-            <div className="history-timeline">
+            <div className="history-timeline" ref={timelineRef}>
               <div className="timeline-item">
                 <div className="timeline-year">1908</div>
                 <div className="timeline-content">
@@ -74,7 +144,7 @@ const History = () => {
             </div>
           </div>
           
-          <div className="history-values">
+          <div className="history-values" ref={valuesRef}>
             <h2>Our Core Values</h2>
             
             <div className="values-grid">

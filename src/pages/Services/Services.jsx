@@ -1,14 +1,62 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
 import './Services.css';
 
 const Services = () => {
+  // Refs for animated elements
+  const pageRef = useRef(null);
+  const headerRef = useRef(null);
+  const servicesGridRef = useRef(null);
+  const ctaRef = useRef(null);
+  
   // Function to limit text to a specific number of words to fit in 4 lines
   const limitWords = (text, maxWords = 30) => {
     const words = text.split(' ');
     if (words.length <= maxWords) return text;
     return words.slice(0, maxWords).join(' ') + '...';
   };
+  useEffect(() => {
+    // Page entrance animation
+    gsap.fromTo(
+      pageRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8, ease: "power2.out" }
+    );
+    
+    // Header animation
+    gsap.fromTo(
+      headerRef.current,
+      { y: -30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.2 }
+    );
+    
+    // Staggered animation for service cards
+    gsap.fromTo(
+      ".service-card",
+      { y: 30, opacity: 0, scale: 0.95 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        scale: 1,
+        duration: 0.6, 
+        stagger: 0.1, 
+        ease: "back.out(1.2)",
+        delay: 0.4
+      }
+    );
+    
+    // CTA section animation
+    gsap.fromTo(
+      ctaRef.current,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.8 }
+    );
+    
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+  }, []);
+
   const serviceCategories = [
     {
       id: 'commercial',
@@ -55,8 +103,8 @@ const Services = () => {
   ];
 
   return (
-    <div className="services-page">
-      <div className="services-header">
+    <div className="services-page" ref={pageRef}>
+      <div className="services-header" ref={headerRef}>
         <div className="container">
           <h1>Our Services</h1>
           <p className="services-intro">
@@ -70,7 +118,7 @@ const Services = () => {
 
       <div className="services-content">
         <div className="container">
-          <div className="services-grid">
+          <div className="services-grid" ref={servicesGridRef}>
             {serviceCategories.map((service) => (
               <div className="service-card" key={service.id} id={service.id}>
                 <div className="service-icon">{service.icon}</div>
@@ -86,7 +134,7 @@ const Services = () => {
         </div>
       </div>
 
-      <div className="services-cta">
+      <div className="services-cta" ref={ctaRef}>
         <div className="container">
           <h2>Need Legal Assistance?</h2>
           <p>

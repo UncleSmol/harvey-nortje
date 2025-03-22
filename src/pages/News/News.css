@@ -4,6 +4,8 @@
   width: 100%;
   background-color: var(--background-primary);
   padding-bottom: 5rem;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  position: relative;
 }
 
 .news-header {
@@ -12,6 +14,7 @@
   padding: 5rem 0 3rem;
   text-align: center;
   position: relative;
+  overflow: hidden;
 }
 
 .news-header:after {
@@ -29,6 +32,7 @@
   font-weight: 700;
   margin-bottom: 1rem;
   color: var(--primary-orange);
+  position: relative;
 }
 
 .news-intro {
@@ -36,6 +40,7 @@
   margin: 0 auto;
   font-size: 1.4rem;
   line-height: 1.8;
+  position: relative;
 }
 
 .news-content {
@@ -50,8 +55,9 @@
 
 .articles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 2.5rem;
+  position: relative;
 }
 
 .article-card {
@@ -126,6 +132,19 @@
   box-shadow: 0 5px 15px rgba(255, 127, 0, 0.2);
 }
 
+/* GSAP Animation Classes */
+.gsap-reveal {
+  visibility: hidden; /* Hide elements until GSAP reveals them */
+}
+
+.gsap-header {
+  overflow: hidden;
+}
+
+.gsap-stagger-container {
+  position: relative;
+}
+
 /* Responsive Styles */
 @media (max-width: 992px) {
   .news-header h1 {
@@ -137,7 +156,7 @@
   }
   
   .articles-grid {
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   }
   
   .article-card h2 {

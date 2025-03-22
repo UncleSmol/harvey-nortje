@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
 import './News.css';
 
 const News = () => {
+  // Simple refs for main elements
+  const pageRef = useRef(null);
+  const headerRef = useRef(null);
+  const contentRef = useRef(null);
+
   const articles = [
     {
       id: 'wills',
@@ -30,9 +36,49 @@ const News = () => {
     }
   ];
 
+  useEffect(() => {
+    // Simple fade-in animation for the entire page
+    gsap.fromTo(
+      pageRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8, ease: "power2.out" }
+    );
+    
+    // Simple animation for header
+    gsap.fromTo(
+      headerRef.current,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.2 }
+    );
+    
+    // Simple animation for content
+    gsap.fromTo(
+      contentRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.4 }
+    );
+    
+    // Simple animation for article cards
+    gsap.fromTo(
+      ".article-card",
+      { y: 20, opacity: 0 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        duration: 0.5, 
+        stagger: 0.1, 
+        ease: "power2.out",
+        delay: 0.6
+      }
+    );
+    
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="news-page">
-      <div className="news-header">
+    <div className="news-page" ref={pageRef}>
+      <div className="news-header" ref={headerRef}>
         <div className="container">
           <h1>News & Articles</h1>
           <p className="news-intro">
@@ -42,7 +88,7 @@ const News = () => {
         </div>
       </div>
 
-      <div className="news-content">
+      <div className="news-content" ref={contentRef}>
         <div className="container">
           <div className="articles-grid">
             {articles.map((article) => (

@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './ServiceDetail.css';
+import useServiceAnimations from '../../hooks/useServiceAnimations';
 
 const PropertyLaw = () => {
+  // Get animation refs and functions from the custom hook
+  const { pageRef, headerRef, contentRef, addToSectionsRef } = useServiceAnimations();
+
   return (
-    <div className="service-detail-page">
-      <div className="service-detail-header">
+    <div className="service-detail-page" ref={pageRef}>
+      <div className="service-detail-header" ref={headerRef}>
         <div className="container">
           <h1>Property Law and Conveyancing</h1>
           <p className="service-detail-intro">
@@ -14,9 +18,59 @@ const PropertyLaw = () => {
         </div>
       </div>
 
-      <div className="service-detail-content">
+      <div className="service-detail-content" ref={contentRef}>
         <div className="container">
-          <div className="service-detail-section">
+          <div className="service-detail-section" ref={addToSectionsRef}>
+            <h2>About Property Law Services</h2>
+            <p>
+              Property Law encompasses the legal processes and documentation required for the transfer, 
+              registration, and ownership of immovable property. Our conveyancing department specializes 
+              in handling all aspects of property transactions, ensuring that your property rights are 
+              properly established and protected.
+            </p>
+            <p>
+              As registered conveyancers, our attorneys are qualified to handle the specialized legal 
+              work involved in property transfers, bond registrations, and related matters. We ensure 
+              that all transactions comply with relevant legislation and regulations.
+            </p>
+          </div>
+          
+          <div className="service-detail-section" ref={addToSectionsRef}>
+            <h2>Our Property Law Services</h2>
+            <p>
+              Our Property Law Department offers comprehensive services for all property-related legal matters. 
+              Whether you're buying your first home, selling commercial property, or developing a new real 
+              estate project, our team has the expertise to guide you through the process.
+            </p>
+            
+            <div className="service-features">
+              <div className="service-feature">
+                <h3>Property Transfers</h3>
+                <p>Handling the legal process of transferring property ownership from seller to buyer, 
+                including preparation and lodgment of all necessary documentation.</p>
+              </div>
+              
+              <div className="service-feature">
+                <h3>Bond Registrations</h3>
+                <p>Registration of mortgage bonds when property is purchased with financing, ensuring 
+                all legal requirements are met for both the buyer and the financial institution.</p>
+              </div>
+              
+              <div className="service-feature">
+                <h3>Sectional Title Registrations</h3>
+                <p>Specialized services for sectional title properties, including establishment of sectional 
+                title schemes and transfer of sectional title units.</p>
+              </div>
+              
+              <div className="service-feature">
+                <h3>Property Development</h3>
+                <p>Legal services for property developers, including township establishment, subdivision 
+                of land, and consolidation of properties.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="service-detail-section" ref={addToSectionsRef}>
             <h2>Our firm renders the following services:</h2>
             
             <ul className="service-list">
@@ -70,20 +124,35 @@ const PropertyLaw = () => {
             </div>
           </div>
           
-          <div className="service-detail-cta">
+          <div className="service-detail-section" ref={addToSectionsRef}>
+            <h2>The Conveyancing Process</h2>
+            <p>
+              The conveyancing process involves several important steps that must be completed correctly 
+              to ensure a valid property transfer. Our experienced team guides clients through each stage:
+            </p>
+            <ol>
+              <li>Preparation and signing of the deed of sale</li>
+              <li>Securing of financing (if applicable)</li>
+              <li>Preparation of transfer documents</li>
+              <li>Obtaining rates clearance certificates and other necessary clearances</li>
+              <li>Lodgment of documents at the Deeds Office</li>
+              <li>Registration of transfer and bond (if applicable)</li>
+              <li>Final financial settlements between parties</li>
+            </ol>
+          </div>
+          
+          <div className="service-cta">
             <h2>Need assistance with property law matters?</h2>
             <p>
               Our experienced team of attorneys is ready to help you with your property transactions and conveyancing needs.
               Contact us today to schedule a consultation.
             </p>
-            <div className="cta-buttons">
-              <Link to="/contact" className="cta-button primary">
-                Contact Us
-              </Link>
-              <Link to="/services" className="cta-button secondary">
-                Back to Services
-              </Link>
-            </div>
+            <Link to="/contact" className="cta-button">
+              Contact Us
+            </Link>
+            <Link to="/services" className="back-to-services">
+              Back to Services
+            </Link>
           </div>
         </div>
       </div>

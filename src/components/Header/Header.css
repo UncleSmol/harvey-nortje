@@ -97,15 +97,22 @@
   position: relative;
 }
 
-.has-submenu > a::after {
-  content: '▼';
-  font-size: 0.6rem;
+.dropdown-arrow {
+  display: inline-block;
   margin-left: 0.5rem;
-  vertical-align: middle;
+  font-size: 0.6rem;
   color: var(--primary-orange);
 }
 
-/* Submenu styling with proper initial state for GSAP animations */
+.dropdown-arrow::after {
+  content: '▼';
+}
+
+.submenu-active .dropdown-arrow::after {
+  content: '▲';
+}
+
+/* Submenu styling with CSS transitions instead of GSAP */
 .submenu {
   position: absolute;
   top: 100%;
@@ -118,10 +125,18 @@
   padding: 0.5rem 0;
   z-index: 10;
   border-left: 2px solid var(--primary-orange);
-  opacity: 0; /* Initial state for GSAP */
-  transform: translateY(15px); /* Initial state for GSAP */
-  pointer-events: auto; /* Ensure clickability */
-  display: none; /* Initially hidden, GSAP will show it */
+  opacity: 0;
+  transform: translateY(15px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  visibility: hidden;
+}
+
+.submenu-active > .submenu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
 }
 
 .submenu-item {
@@ -141,54 +156,83 @@
   /* Transform will be handled by GSAP */
 }
 
-/* Mobile menu */
+/* Mobile menu toggle - HIDDEN on desktop by default */
 .mobile-menu-toggle {
-  display: none;
+  display: none; /* Hide by default on all screens */
   cursor: pointer;
   z-index: 20;
-  margin-left: auto; /* Push to far right */
+  margin-left: auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: relative;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.mobile-menu-toggle.active {
+  background-color: var(--primary-orange);
 }
 
 .hamburger {
-  display: block;
-  width: 30px;
-  height: 2px;
-  background-color: var(--header-text);
+  width: 24px;
+  height: 20px;
   position: relative;
-  /* No transition - GSAP will handle animations */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none; /* Ensures clicks pass through to the button */
 }
 
-.hamburger::before,
-.hamburger::after {
-  content: '';
-  position: absolute;
-  width: 30px;
+.hamburger-line {
+  display: block;
+  width: 100%;
   height: 2px;
   background-color: var(--header-text);
-  /* No transition - GSAP will handle animations */
+  border-radius: 1px;
+  position: relative;
+  transform-origin: center;
+  transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
 }
 
-.hamburger::before {
-  transform: translateY(-10px);
+.mobile-menu-toggle.active .hamburger-line {
+  background-color: white;
 }
 
-.hamburger::after {
-  transform: translateY(10px);
+/* Hamburger animation */
+.mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
 }
 
-/* These states will be set by GSAP */
-.hamburger.open {
-  background-color: transparent;
+.mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+  opacity: 0;
 }
 
-.hamburger.open::before {
-  transform: rotate(45deg);
-  top: 0;
+.mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
 }
 
-.hamburger.open::after {
-  transform: rotate(-45deg);
-  bottom: 0;
+/* Hide scrollbars for Chrome, Safari and Opera */
+.nav-menu::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
+/* Hide scrollbars for IE, Edge and Firefox */
+.nav-menu {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* Responsive styles */
@@ -233,33 +277,43 @@
   }
   
   .mobile-menu-toggle {
-    display: block;
-    order: 3; /* Ensure it's on the right */
+    display: flex; /* Only display hamburger on mobile */
+    order: 3;
+    padding: 0;
+    margin: 0;
+    touch-action: manipulation; /* Improves touch response */
   }
   
   .logo-container {
-    order: 1; /* Ensure logo is on the left */
+    order: 1;
   }
   
   .nav-container {
     width: auto;
     margin-left: 0;
-    order: 2; /* Middle position */
-    flex: 0; /* Don't take extra space */
+    order: 2;
+    flex: 0;
   }
 
   .nav-menu {
     position: fixed;
     top: 0;
-    right: -300px; /* Initial position for GSAP animation */
+    right: -300px;
     width: 300px;
     height: 100vh;
     background-color: var(--neutral-black);
-    overflow-y: auto;
+    overflow-y: auto; /* Allow scrolling but hide scrollbar */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
     flex-direction: column;
     padding: 80px 0 30px 0;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-    /* No transition - GSAP will handle animations */
+    z-index: 19;
+    transition: right 0.3s ease-in-out;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+  
+  .nav-menu.active {
+    right: 0;
   }
 
   .menu-items {
@@ -273,46 +327,81 @@
   .menu-item {
     margin: 0.5rem 0;
     width: 100%;
+    border: none;
+    border-radius: 0;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .nav-menu.active .menu-item {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: calc(0.05s * var(--item-index, 0));
+  }
+  
+  .menu-item:hover {
+    border: none;
   }
   
   .menu-item a {
     padding: 0.8rem 1.5rem;
     border-left: 3px solid transparent;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .menu-item a:hover {
     border-left: 3px solid var(--primary-orange);
     background-color: rgba(255, 127, 0, 0.1);
+    box-shadow: none;
   }
 
-  /* Mobile submenu needs different styling */
+  /* Mobile submenu styling */
   .submenu {
     position: static;
     box-shadow: none;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.2);
-    border-left: none;
+    border-left: 3px solid var(--primary-orange);
     border-radius: 0;
-    padding-left: 1rem;
-    opacity: 1;
-    transform: none;
-    display: block;
+    padding: 0;
+    margin-left: 1.5rem;
     max-height: 0;
     overflow: hidden;
-    -webkit-transform: none;
-    -moz-transform: none;
-    -ms-transform: none;
-    -o-transform: none;
-}
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+  }
+  
+  .submenu.active {
+    display: block;
+    max-height: 500px;
+    padding: 0.5rem 0;
+  }
   
   .submenu-item a {
-    padding-left: 2.5rem;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.85rem;
   }
   
-  .has-submenu > a::after {
-    float: right;
+  .has-submenu > a {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
+  .has-submenu > a .dropdown-arrow {
+    transition: transform 0.3s ease;
+  }
+  
+  .has-submenu.submenu-active > a .dropdown-arrow {
+    transform: rotate(180deg);
+  }
   
   .logo {
     height: 45px;
@@ -331,5 +420,7 @@
   .nav-menu {
     width: 280px;
     right: -280px;
+    /* Ensure no scrollbar appears */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
 }

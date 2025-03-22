@@ -1,15 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import './Header.css';
 import logoSmall from '../../assets/logo.png';
 import logoLarge from '../../assets/logo2.png';
+import { showDropdown, hideDropdown, handleHoverAnimation } from './dropdownAnimation';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showSubmenu, setShowSubmenu] = useState('');
+  const [activeMenuItem, setActiveMenuItem] = useState(null);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 992);
-  const [submenuVisible, setSubmenuVisible] = useState(false);
+  // Removed unused variable: submenuVisible
+  
+  // Get current location to detect route changes
+  const location = useLocation();
   
   // Refs for GSAP animations
   const headerRef = useRef(null);
@@ -17,23 +21,169 @@ const Header = () => {
   const logoRef = useRef(null);
   const hamburgerRef = useRef(null);
   const submenuRef = useRef(null);
+  const navMenuRef = useRef(null);
+
+  // Define animateHamburger first since it's used by closeMenu
+  const animateHamburger = useCallback((open) => {
+    if (!hamburgerRef.current) return;
+    
+    const lines = hamburgerRef.current.querySelectorAll('.hamburger-line');
+    
+    if (open) {
+      // Animate to X
+      gsap.to(lines[0], { 
+        rotation: 45, 
+        y: 8, 
+        duration: 0.4,
+        ease: "power2.inOut" 
+      });
+      
+      gsap.to(lines[1], { 
+        opacity: 0, 
+        duration: 0.2,
+        ease: "power2.inOut" 
+      });
+      
+      gsap.to(lines[2], { 
+        rotation: -45, 
+        y: -8, 
+        duration: 0.4,
+        ease: "power2.inOut" 
+      });
+    } else {
+      // Animate back to hamburger
+      gsap.to(lines[0], { 
+        rotation: 0, 
+        y: 0, 
+        duration: 0.4,
+        ease: "power2.inOut" 
+      });
+      
+      gsap.to(lines[1], { 
+        opacity: 1, 
+        duration: 0.2,
+        ease: "power2.inOut" 
+      });
+      
+      gsap.to(lines[2], { 
+        rotation: 0, 
+        y: 0, 
+        duration: 0.4,
+        ease: "power2.inOut" 
+      });
+    }
+  }, []);
+
+  // Define closeMenu after animateHamburger to avoid dependency issues
+  const closeMenu = useCallback(() => {
+    setIsOpen(false);
+    
+    // Reset any open submenus
+    setActiveMenuItem(null);
+    
+    // Animate hamburger back
+    animateHamburger(false);
+    
+    // Animate menu closing
+    if (navMenuRef.current) {
+      gsap.to(navMenuRef.current, {
+        right: window.innerWidth <= 576 ? "-280px" : "-300px",
+        duration: 0.4,
+        ease: "power3.inOut",
+        onComplete: () => {
+          // Re-enable scrolling
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  }, [animateHamburger]);
+
+  const openMenu = useCallback(() => {
+    setIsOpen(true);
+    
+    // Animate hamburger to X
+    animateHamburger(true);
+    
+    // Animate menu opening
+    if (navMenuRef.current) {
+      gsap.to(navMenuRef.current, {
+        right: 0,
+        duration: 0.4,
+        ease: "power3.inOut"
+      });
+      
+      // Animate menu items appearing
+      const mobileMenuItems = navMenuRef.current.querySelectorAll('.menu-item');
+      gsap.fromTo(
+        mobileMenuItems,
+        { 
+          x: 50,
+          opacity: 0 
+        },
+        { 
+          x: 0,
+          opacity: 1,
+          stagger: 0.05,
+          duration: 0.3,
+          ease: "power2.out",
+          delay: 0.2
+        }
+      );
+    }
+    
+    // Disable body scrolling
+    document.body.style.overflow = 'hidden';
+  }, [animateHamburger]);
   
-  // Reset refs array
-  const resetMenuItemsRef = () => {
-    menuItemsRef.current = [];
-  };
+  const toggleMenu = useCallback(() => {
+    console.log("Toggle menu clicked, current state:", isOpen);
+    if (!isOpen) {
+      openMenu();
+    } else {
+      closeMenu();
+    }
+  }, [isOpen, openMenu, closeMenu]);
 
   // Handle screen resize for responsive logo
   useEffect(() => {
     const handleResize = () => {
-      setIsLargeScreen(window.innerWidth >= 992);
+      const largeScreen = window.innerWidth >= 992;
+      setIsLargeScreen(largeScreen);
+      
+      // Close mobile menu if screen is resized to desktop
+      if (largeScreen && isOpen) {
+        closeMenu();
+      }
     };
 
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [isOpen, closeMenu]);
+  
+  // Close menu when route changes
+  useEffect(() => {
+    if (isOpen) {
+      closeMenu();
+    }
+  }, [location, isOpen, closeMenu]);
+  
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && 
+          navMenuRef.current && !navMenuRef.current.contains(event.target) && 
+          hamburgerRef.current && !hamburgerRef.current.contains(event.target)) {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, closeMenu]);
   
   // Initial animations when component mounts
   useEffect(() => {
@@ -91,79 +241,42 @@ const Header = () => {
     }
   }, []);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
+  // Handle dropdown menu animations
+  const handleMouseEnter = useCallback((menuIndex) => {
+    setActiveMenuItem(menuIndex);
+    // Using submenu visibility directly through DOM manipulation instead of state
     
-    if (!isOpen) {
-      // Animate menu opening
-      gsap.to(".nav-menu", {
-        right: 0,
-        duration: 0.4,
-        ease: "power2.inOut"
-      });
-    } else {
-      // Animate menu closing
-      gsap.to(".nav-menu", {
-        right: "-300px",
-        duration: 0.4,
-        ease: "power2.inOut"
+    if (submenuRef.current) {
+      showDropdown(submenuRef.current);
+    }
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (submenuRef.current) {
+      hideDropdown(submenuRef.current, () => {
+        setActiveMenuItem(null);
+        // No need to set submenuVisible state
       });
     }
-  };
+  }, []);
 
-  // Handle dropdown menu animations
-  const handleMouseEnter = (menuItem) => {
-    setShowSubmenu(menuItem);
-    setSubmenuVisible(true);
-    
-    // Ensure previous animations are cleared
-    gsap.killTweensOf(".submenu");
-    
-    // Make sure submenu is visible before animating
-    gsap.set(".submenu", { display: "block" });
-    
-    // Animate submenu appearance
-    gsap.fromTo(
-      ".submenu",
-      { 
-        opacity: 0,
-        y: 15,
-        transformOrigin: "top center"
-      },
-      { 
-        opacity: 1,
-        y: 0,
-        duration: 0.3,
-        ease: "power2.out"
+  // Toggle submenu in mobile view
+  const toggleSubmenu = useCallback((menuIndex, e) => {
+    if (window.innerWidth < 992) {
+      e.preventDefault();
+      
+      if (activeMenuItem === menuIndex) {
+        setActiveMenuItem(null);
+      } else {
+        setActiveMenuItem(menuIndex);
       }
-    );
-  };
-
-  const handleMouseLeave = () => {
-    // Animate submenu disappearance
-    gsap.to(".submenu", {
-      opacity: 0,
-      y: 15,
-      duration: 0.3,
-      ease: "power2.in",
-      onComplete: () => {
-        setShowSubmenu('');
-        setSubmenuVisible(false);
-        gsap.set(".submenu", { display: "none" });
-      }
-    });
-  };
+    }
+  }, [activeMenuItem]);
 
   // GSAP hover effect for menu items
-  const handleMenuItemHover = (e, enter) => {
-    if (window.innerWidth >= 992) {
-      gsap.to(e.currentTarget, {
-        y: enter ? -3 : 0,
-        duration: 0.3,
-        ease: "power2.out"
-      });
-    }
-  };
+  const handleMenuItemHover = useCallback((e, enter) => {
+    handleHoverAnimation(e.currentTarget, enter);
+  }, []);
 
   const menuItems = [
     { name: 'Home', path: '/' },
@@ -202,35 +315,64 @@ const Header = () => {
         </div>
         
         <div className="nav-container">
-          <nav className={`nav-menu ${isOpen ? 'open' : ''}`}>
+          <nav className={`nav-menu ${isOpen ? 'open' : ''}`} ref={navMenuRef}>
             <ul className="menu-items">
               {menuItems.map((item, index) => (
                 <li 
                   key={index} 
-                  className={`menu-item ${item.submenu ? 'has-submenu' : ''}`}
+                  className={`menu-item ${item.submenu ? 'has-submenu' : ''} ${activeMenuItem === index ? 'submenu-active' : ''} ${location.pathname === item.path ? 'active' : ''}`}
                   onMouseEnter={(e) => {
-                    item.submenu && handleMouseEnter(item.name);
-                    handleMenuItemHover(e, true);
+                    if (window.innerWidth >= 992) {
+                      item.submenu && handleMouseEnter(index);
+                      handleMenuItemHover(e, true);
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    item.submenu && handleMouseLeave();
-                    handleMenuItemHover(e, false);
+                    if (window.innerWidth >= 992) {
+                      item.submenu && handleMouseLeave();
+                      handleMenuItemHover(e, false);
+                    }
                   }}
                   ref={el => menuItemsRef.current[index] = el}
                 >
-                  <Link to={item.path}>{item.name}</Link>
-                  
-                  {item.submenu && showSubmenu === item.name && (
-                    <ul 
-                      className="submenu" 
-                      ref={submenuRef}
+                  {item.submenu ? (
+                    // For items with submenu
+                    <>
+                      <Link 
+                        to={item.path}
+                        onClick={(e) => item.submenu && toggleSubmenu(index, e)}
+                        className={location.pathname === item.path ? 'active' : ''}
+                      >
+                        {item.name}
+                        <span className="dropdown-arrow"></span>
+                      </Link>
+                      
+                      <ul 
+                        className={`submenu ${activeMenuItem === index ? 'active' : ''}`}
+                        ref={activeMenuItem === index ? submenuRef : null}
+                      >
+                        {item.submenu.map((subItem, subIndex) => (
+                          <li key={subIndex} className="submenu-item">
+                            <Link 
+                              to={subItem.path}
+                              onClick={() => window.innerWidth < 992 && closeMenu()}
+                              className={location.pathname === subItem.path ? 'active' : ''}
+                            >
+                              {subItem.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : (
+                    // For regular menu items
+                    <Link 
+                      to={item.path}
+                      onClick={() => window.innerWidth < 992 && closeMenu()}
+                      className={location.pathname === item.path ? 'active' : ''}
                     >
-                      {item.submenu.map((subItem, subIndex) => (
-                        <li key={subIndex} className="submenu-item">
-                          <Link to={subItem.path}>{subItem.name}</Link>
-                        </li>
-                      ))}
-                    </ul>
+                      {item.name}
+                    </Link>
                   )}
                 </li>
               ))}
@@ -238,9 +380,19 @@ const Header = () => {
           </nav>
         </div>
         
-        <div className="mobile-menu-toggle" onClick={toggleMenu} ref={hamburgerRef}>
-          <span className={`hamburger ${isOpen ? 'open' : ''}`}></span>
-        </div>
+        <button 
+          className={`mobile-menu-toggle ${isOpen ? 'active' : ''}`} 
+          onClick={toggleMenu} 
+          ref={hamburgerRef}
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          type="button"
+        >
+          <div className="hamburger">
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+          </div>
+        </button>
       </div>
     </header>
   );

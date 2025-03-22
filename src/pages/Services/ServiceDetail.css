@@ -4,6 +4,7 @@
   width: 100%;
   background-color: var(--background-primary);
   padding-bottom: 5rem;
+  overflow-x: hidden;
 }
 
 .service-detail-header {
@@ -29,6 +30,7 @@
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: var(--primary-orange);
+  animation: fadeInDown 0.8s ease-out;
 }
 
 .service-detail-intro {
@@ -36,6 +38,7 @@
   margin: 0 auto;
   font-size: 1.2rem;
   line-height: 1.8;
+  animation: fadeIn 1s ease-out 0.3s both;
 }
 
 .service-detail-content {
@@ -54,6 +57,16 @@
   padding: 3rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   margin-bottom: 3rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-detail-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.service-detail-section:last-child {
+  margin-bottom: 0;
 }
 
 .service-detail-section h2 {
@@ -88,6 +101,11 @@
   font-size: 1.1rem;
   line-height: 1.6;
   color: var(--neutral-gray-dark);
+  transition: transform 0.2s ease;
+}
+
+.service-list > li:hover {
+  transform: translateX(5px);
 }
 
 .service-list > li:before {
@@ -173,18 +191,44 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   border-left: 4px solid var(--primary-orange);
+  position: relative;
+  overflow: hidden;
 }
 
 .document-button:before {
   content: '📄';
   margin-right: 0.8rem;
   font-size: 1.3rem;
+  transition: transform 0.3s ease;
+}
+
+.document-button:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 127, 0, 0.1);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+  z-index: 0;
 }
 
 .document-button:hover {
   background-color: #eeeeee;
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.document-button:hover:before {
+  transform: rotate(10deg);
+}
+
+.document-button:hover:after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 /* CTA Section */
@@ -243,12 +287,91 @@
   background-color: transparent;
   color: white;
   border: 2px solid white;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.cta-button.secondary:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+  z-index: -1;
 }
 
 .cta-button.secondary:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.cta-button.secondary:hover:before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Back to Services Link */
+.back-to-services {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary-orange);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 3rem;
+  transition: color 0.3s ease;
+}
+
+.back-to-services:before {
+  content: '←';
+  margin-right: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.back-to-services:hover {
+  color: var(--primary-orange-dark);
+}
+
+.back-to-services:hover:before {
+  transform: translateX(-5px);
 }
 
 /* Responsive Styles */
@@ -341,10 +464,12 @@
   
   .service-detail-section {
     padding: 2rem;
+    animation: fadeIn 0.8s ease-out;
   }
-  
+
   .service-detail-section h2 {
     font-size: 1.6rem;
+    animation: slideInRight 0.8s ease-out;
   }
   
   .service-list > li {

@@ -2,15 +2,14 @@
 
 .history-page {
   width: 100%;
+  overflow-x: hidden;
   background-color: var(--background-primary);
-  padding-bottom: 5rem;
 }
 
 .history-header {
   background: linear-gradient(135deg, var(--neutral-black) 0%, #333333 100%);
   color: white;
   padding: 5rem 0 3rem;
-  text-align: center;
   position: relative;
 }
 
@@ -32,10 +31,9 @@
 }
 
 .history-intro {
-  max-width: 800px;
-  margin: 0 auto;
   font-size: 1.4rem;
   line-height: 1.8;
+  max-width: 800px;
 }
 
 .history-content {
@@ -54,19 +52,14 @@
   padding: 3rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   margin-bottom: 3rem;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 3rem;
-}
-
-.history-text {
-  flex: 1;
-  min-width: 300px;
 }
 
 .history-text p {
   font-size: 1.1rem;
-  line-height: 1.8;
+  line-height: 1.7;
   color: var(--neutral-gray-dark);
   margin-bottom: 1.5rem;
 }
@@ -75,10 +68,7 @@
   margin-bottom: 0;
 }
 
-/* Timeline Styling */
 .history-timeline {
-  flex: 1;
-  min-width: 300px;
   position: relative;
 }
 
@@ -88,8 +78,8 @@
   top: 0;
   bottom: 0;
   left: 30px;
-  width: 3px;
-  background-color: var(--primary-orange);
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary-orange), var(--primary-orange-dark));
   border-radius: 2px;
 }
 
@@ -116,9 +106,9 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1rem;
-  z-index: 1;
+  font-size: 1.1rem;
   box-shadow: 0 5px 15px rgba(255, 127, 0, 0.3);
+  z-index: 1;
 }
 
 .timeline-content {
@@ -135,10 +125,8 @@
 }
 
 .timeline-content p {
-  font-size: 1rem;
-  line-height: 1.6;
   color: var(--neutral-gray-dark);
-  margin: 0;
+  line-height: 1.6;
 }
 
 /* Values Section */
@@ -172,24 +160,27 @@
 
 .values-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 2rem;
+  margin-top: 2rem;
 }
 
 .value-card {
-  text-align: center;
-  padding: 2rem;
+  background-color: #f9f9f9;
   border-radius: 8px;
-  transition: all 0.3s ease;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 4px solid var(--primary-orange);
 }
 
 .value-card:hover {
-  background-color: #f9f9f9;
   transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .value-icon {
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
 }
 
@@ -252,27 +243,14 @@
     padding: 4rem 0 2.5rem;
   }
   
-  .history-content {
-    padding: 4rem 0;
-  }
-  
   .history-section {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 2rem;
   }
   
-  .history-timeline:before {
-    left: 25px;
-  }
-  
-  .timeline-year {
-    width: 45px;
-    height: 45px;
-    font-size: 0.85rem;
-  }
-  
-  .timeline-item {
-    padding-left: 60px;
+  .values-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
   }
 }
 
@@ -289,36 +267,27 @@
     padding: 3rem 0;
   }
   
-  .history-section,
+  .history-section, 
   .history-values {
     padding: 2rem;
   }
   
-  .history-text p {
-    font-size: 1rem;
-  }
-  
-  .timeline-content {
-    padding: 1.2rem;
-  }
-  
-  .timeline-content h3 {
-    font-size: 1.1rem;
-  }
-  
-  .timeline-content p {
-    font-size: 0.95rem;
-  }
-  
   .history-values h2 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .timeline-item {
+    padding-left: 70px;
+  }
+  
+  .timeline-year {
+    width: 50px;
+    height: 50px;
+    font-size: 1rem;
   }
   
   .values-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .value-card {
-    padding: 1.5rem;
   }
 }

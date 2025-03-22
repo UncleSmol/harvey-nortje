@@ -64,9 +64,28 @@ body {
   max-width: 600px;
 }
 
+/* Hide scrollbars on mobile devices while maintaining scroll functionality */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  body::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+  
+  .app-container {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
   .content {
     padding: 1.5rem;
+    width: 100%;
+    overflow-x: hidden;
   }
   
   .page-placeholder {

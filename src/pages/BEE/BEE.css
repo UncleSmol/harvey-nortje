@@ -1,16 +1,16 @@
+/* BEE Page Styles - Optimized for GSAP animations */
 @import '../../styles/variables.css';
 
 .bee-page {
   width: 100%;
+  overflow-x: hidden;
   background-color: var(--background-primary);
-  padding-bottom: 5rem;
 }
 
 .bee-header {
   background: linear-gradient(135deg, var(--neutral-black) 0%, #333333 100%);
   color: white;
   padding: 5rem 0 3rem;
-  text-align: center;
   position: relative;
 }
 
@@ -32,10 +32,9 @@
 }
 
 .bee-intro {
-  max-width: 800px;
-  margin: 0 auto;
   font-size: 1.4rem;
   line-height: 1.8;
+  max-width: 800px;
 }
 
 .bee-content {
@@ -55,9 +54,9 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   margin-bottom: 3rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
 }
 
 .bee-info {
@@ -67,7 +66,7 @@
 
 .bee-info p {
   font-size: 1.2rem;
-  line-height: 1.8;
+  line-height: 1.6;
   color: var(--neutral-gray-dark);
   margin-bottom: 2rem;
 }
@@ -77,8 +76,37 @@
   font-weight: 700;
 }
 
+.certificate-link {
+  margin-top: 2rem;
+}
+
+.certificate-button {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, var(--primary-orange) 0%, var(--primary-orange-dark) 100%);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(255, 127, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.certificate-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 127, 0, 0.3);
+}
+
+.certificate-button .icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
 .bee-badge {
-  padding: 2rem;
+  flex: 0 0 auto;
+  margin-left: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -87,79 +115,27 @@
 .level-badge {
   width: 150px;
   height: 150px;
-  border-radius: 50%;
   background: linear-gradient(135deg, var(--primary-orange) 0%, var(--primary-orange-dark) 100%);
+  border-radius: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: white;
-  box-shadow: 0 10px 25px rgba(255, 127, 0, 0.3);
-  position: relative;
-}
-
-.level-badge:before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  border-radius: 50%;
-  border: 2px dashed rgba(255, 255, 255, 0.5);
-  animation: rotate 30s linear infinite;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  box-shadow: 0 8px 25px rgba(255, 127, 0, 0.3);
 }
 
 .level-number {
   font-size: 4rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
 }
 
 .level-text {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1px;
-}
-
-.certificate-link {
-  margin-top: 2rem;
-}
-
-.certificate-button {
-  display: inline-flex;
-  align-items: center;
-  background-color: #f5f5f5;
-  color: var(--neutral-black);
-  font-size: 1.1rem;
-  font-weight: 600;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  text-decoration: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  border-left: 4px solid var(--primary-orange);
-}
-
-.certificate-button .icon {
-  margin-right: 0.8rem;
-  font-size: 1.3rem;
-}
-
-.certificate-button:hover {
-  background-color: #eeeeee;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .bee-commitment {
@@ -170,9 +146,9 @@
 }
 
 .bee-commitment h2 {
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: var(--neutral-black);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   position: relative;
   padding-bottom: 1rem;
 }
@@ -192,34 +168,35 @@
   font-size: 1.1rem;
   line-height: 1.7;
   color: var(--neutral-gray-dark);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .bee-commitment ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  padding-left: 20px;
 }
 
-.bee-commitment ul li {
-  position: relative;
-  padding-left: 2rem;
-  margin-bottom: 1rem;
+.bee-commitment li {
   font-size: 1.1rem;
   line-height: 1.6;
   color: var(--neutral-gray-dark);
+  margin-bottom: 1rem;
+  position: relative;
+  padding-left: 10px;
 }
 
-.bee-commitment ul li:before {
-  content: '•';
+.bee-commitment li::before {
+  content: '';
   position: absolute;
-  left: 0;
-  color: var(--primary-orange);
-  font-size: 1.5rem;
-  line-height: 1.2;
+  left: -15px;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--primary-orange);
 }
 
-/* Responsive Styles */
+
+/* Media Queries for Responsive Design */
 @media (max-width: 992px) {
   .bee-header h1 {
     font-size: 2.5rem;
@@ -229,30 +206,25 @@
     font-size: 1.3rem;
   }
   
+  .bee-content {
+    padding: 4rem 0;
+  }
+  
   .bee-section {
     padding: 2.5rem;
   }
   
-  .bee-info p {
-    font-size: 1.1rem;
-  }
-  
-  .level-badge {
-    width: 130px;
-    height: 130px;
-  }
-  
-  .level-number {
-    font-size: 3.5rem;
+  .bee-commitment {
+    padding: 2.5rem;
   }
   
   .bee-commitment h2 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
   
-  .bee-commitment p, 
-  .bee-commitment ul li {
-    font-size: 1.05rem;
+  .certificate-button {
+    font-size: 1rem;
+    padding: 0.9rem 1.8rem;
   }
 }
 
@@ -261,41 +233,17 @@
     padding: 4rem 0 2.5rem;
   }
   
-  .bee-content {
-    padding: 4rem 0;
-  }
-  
   .bee-section {
     flex-direction: column;
-    text-align: center;
-    padding: 2.5rem;
   }
   
   .bee-info {
+    width: 100%;
     margin-bottom: 2rem;
   }
   
   .bee-badge {
-    padding: 0;
-  }
-  
-  .certificate-button {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .bee-commitment {
-    padding: 2.5rem;
-  }
-  
-  .bee-commitment h2:after {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  .bee-commitment h2,
-  .bee-commitment p {
-    text-align: center;
+    margin-left: 0;
   }
 }
 
@@ -317,8 +265,9 @@
     padding: 2rem;
   }
   
-  .bee-info p {
-    font-size: 1rem;
+  .bee-commitment h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
   }
   
   .level-badge {
@@ -330,26 +279,12 @@
     font-size: 3rem;
   }
   
+  .level-text {
+    font-size: 0.8rem;
+  }
+  
   .certificate-button {
-    font-size: 1rem;
-    padding: 0.9rem 1.5rem;
-  }
-  
-  .certificate-button .text {
-    font-size: 0.95rem;
-  }
-  
-  .bee-commitment h2 {
-    font-size: 1.6rem;
-  }
-  
-  .bee-commitment p, 
-  .bee-commitment ul li {
-    font-size: 1rem;
-  }
-  
-  .bee-commitment ul li {
-    padding-left: 1.5rem;
-    text-align: left;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
   }
 }
